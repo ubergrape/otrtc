@@ -1,0 +1,9 @@
+{
+  "name": "chatgrape-webrtc-server",
+  "version": "0.0.1",
+  "description": "Simple server for signaling between clients",
+  "dependencies": {
+    "express": "^4.12.3",
+    "socket.io": "^1.3.5"
+  }
+}

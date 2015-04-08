@@ -1,0 +1,6 @@
+---
+applications:
+- name: chat
+  memory: 512M
+  buildpack: https://github.com/heroku/heroku-buildpack-nodejs.git
+  instances: 1
