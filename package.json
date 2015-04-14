@@ -29,7 +29,8 @@
     "moment": "^2.9.0",
     "react-time": "^2.5.0",
     "grunt-contrib-concat": "^0.5.1",
-    "coffee-reactify": "^3.0.0"
+    "coffee-reactify": "^3.0.0",
+    "react-spin": "^0.3.0"
   },
   "dependencies": {
     "express": "^4.12.3",
