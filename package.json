@@ -30,7 +30,7 @@
     "react-time": "^2.5.0",
     "grunt-contrib-concat": "^0.5.1",
     "coffee-reactify": "^3.0.0",
-    "react-spin": "^0.3.0"
+    "react-spin": "git://github.com/benfreu/react-spin.git"
   },
   "dependencies": {
     "express": "^4.12.3",
