@@ -18,7 +18,6 @@ Messagelist = React.createClass
     return get_messages_state()
 
   componentDidMount: () ->
-    # @_scrollToBottom()
     MessageStore.addChangeListener(@_onChange)
 
   componentWillUnmount: () ->

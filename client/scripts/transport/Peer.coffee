@@ -15,6 +15,7 @@ Peer = (peer_id, username, create_offer) ->
   @username = username
   @is_offer_creator = create_offer
   @status = ChatConstants.PEER_STATUS_CONNECTING
+  @verified = false
 
   config =
     iceServers: [{
@@ -72,7 +73,6 @@ Peer = (peer_id, username, create_offer) ->
   EventBus.subscribe ChatConstants.EVENT_REMOTE_ICE_CANDIDATE_RECEIVED, (data) =>
     #only process event if it concerns the remote peer we're managing here
     if data.peer_id == peer_id
-      # console.log 'received ICE'
       @_connection.processIce(data.candidate)
 
   EventBus.subscribe ChatConstants.EVENT_REMOTE_USER_LOGGED_OFF, (data) =>
@@ -94,7 +94,6 @@ Peer = (peer_id, username, create_offer) ->
 Peer.prototype._change_status = (new_status) ->
   old_status = @status
   @status = new_status
-  # console.log new_status, @id
   EventBus.publish ChatConstants.EVENT_PEER_STATUS_CHANGED,
     peer: @
     peer_id: @id
@@ -112,6 +111,13 @@ Peer.prototype.close = () ->
   if @_channel? then @_channel.close()
   if @_connection? then @_connection.close()
   @_change_status ChatConstants.PEER_STATUS_DISCONNECTED
+
+
+Peer.prototype.get_fingerprint = () ->
+  if @otr?
+    return @otr.their_priv_pk.fingerprint()
+  else
+    return ''
 
 
 module.exports = Peer

@@ -6,14 +6,12 @@ Menu = require './Menu.cjsx'
 Messagelist = require './Messagelist.cjsx'
 React = require 'react'
 UserdataStore = require '../stores/UserdataStore.coffee'
-VerificationBox = require './VerificationBox.cjsx'
 WelcomeScreen = require './WelcomeScreen.cjsx'
 
 
 get_state = () ->
   return {
     status: UserdataStore.get_status()
-    verification_data: UserdataStore.verification_data
   }
 
 
@@ -28,22 +26,18 @@ OTRChat = React.createClass
     return get_state()
 
   componentDidMount: () ->
-    UserdataStore.on ChatConstants.EVENT_STORE_CHANGED, () =>
-      @_update_state()
+    UserdataStore.on ChatConstants.EVENT_STORE_CHANGED, @_update_state
 
   componentWillUnmount: () ->
+    UserdataStore.removeListener ChatConstants.EVENT_STORE_CHANGED, @_update_state
     return
 
   _update_state: () ->
     @setState get_state()
 
   render: () ->
-    if @state.verification_data?
-      ver_box = <VerificationBox verification_data={@state.verification_data} />
-    else
-      ver_box = null
     if @state.status == ChatConstants.USER_STATUS_SETUP_COMPLETE
-      view = <div><Menu /><Messagelist /><Inputbox />{ver_box}</div>
+      view = <div><Menu /><Messagelist /><Inputbox /></div>
     else
       view = <WelcomeScreen status={@state.status} />
     return <div>{view}</div>

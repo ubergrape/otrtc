@@ -13,7 +13,7 @@ _private_key = null
 
 UserdataStore = assign({}, EventEmitter.prototype, {
 
-  verification_data: null
+  verifying_peer: null
 
   emitChange: () ->
     @emit(ChatConstants.EVENT_STORE_CHANGED)
@@ -35,6 +35,9 @@ UserdataStore = assign({}, EventEmitter.prototype, {
 
   get_private_key: () ->
     return _private_key
+
+  get_my_fingerprint: () ->
+    return _private_key.fingerprint()
 })
 
 
@@ -45,8 +48,8 @@ UserdataStore.dispatchToken = AppDispatcher.register (action) =>
       _status = ChatConstants.USER_STATUS_GENERATING_KEY
       UserdataStore.emitChange()
       window.setTimeout(() ->
-        #TODO this saves the key to the localstore. should only be done during dev
         _private_key = new DSA()
+        # this saves the key to the localstore. should only be done during dev
         # if not localStorage['private_key']?
         #   _private_key = new DSA()
         #   localStorage.setItem('private_key', _private_key.packPrivate())
@@ -56,15 +59,12 @@ UserdataStore.dispatchToken = AppDispatcher.register (action) =>
       , 100)
     when ChatConstants.ACTIONTYPE_SHOW_VERIFICATION_BOX
       if action.peer? and action.peer.otr? and action.peer.otr.msgstate == OTR.CONST.MSGSTATE_ENCRYPTED
-        UserdataStore.verification_data =
-          peer: action.peer
-          my_fingerprint: _private_key.fingerprint()
-          peer_fingerprint: action.peer.otr.their_priv_pk.fingerprint()
+        UserdataStore.verifying_peer = action.peer
         UserdataStore.emitChange()
       else
         console.log 'cannot verify peer without a secure connection'
     when ChatConstants.ACTIONTYPE_CLOSE_VERIFICATION_BOX
-      UserdataStore.verification_data = null
+      UserdataStore.verifying_peer = null
       UserdataStore.emitChange()
 
 
@@ -77,13 +77,13 @@ EventBus.subscribe ChatConstants.EVENT_LOCAL_USER_AUTHENTICATED, (data) =>
   _status = ChatConstants.USER_STATUS_SETUP_COMPLETE #TODO
   UserdataStore.emitChange()
 
-#just for dev to speedup login
-# window.setTimeout(() ->
-#   AppDispatcher.dispatch(
-#     type: ChatConstants.ACTIONTYPE_USERNAME_SUPPLIED
-#     username: 'Alice'
-#   )
-# , 100)
+# just for dev to speedup login
+window.setTimeout(() ->
+  AppDispatcher.dispatch(
+    type: ChatConstants.ACTIONTYPE_USERNAME_SUPPLIED
+    username: 'Alice'
+  )
+, 100)
 
 
 module.exports = UserdataStore
