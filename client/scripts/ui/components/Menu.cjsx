@@ -1,5 +1,6 @@
 ChatConstants = require '../../constants/ChatConstants.coffee'
 ConnectionCoordinator = require '../../transport/ConnectionCoordinator.coffee'
+ConnectionLost = require './ConnectionLost.cjsx'
 PeerManager = require '../../transport/PeerManager.coffee'
 React = require 'react'
 SmpBox = require './SmpBox.cjsx'
@@ -51,6 +52,7 @@ Menu = React.createClass
     else
       box = null
     <div className="menu">
+      <ConnectionLost />
       <WhoAmI name={@state.my_name} />
       <Userlist peers={@state.peers} />
       {box}

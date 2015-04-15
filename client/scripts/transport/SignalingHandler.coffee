@@ -28,6 +28,11 @@ SignalingHandler = (room_id) ->
       peer_id: data.sender_id
       candidate: data.candidate
 
+  socket.on 'disconnect', () ->
+    # Connection lost, so probably the whole internet connection is gone.
+    # Report this to the user
+    EventBus.publish ChatConstants.EVENT_SOCKET_CONNECTION_LOST
+
   EventBus.subscribe ChatConstants.EVENT_PEER_LOCAL_DESCRIPTION, (data) ->
     socket.emit 'remote_description',
       recipient_id: data.peer_id

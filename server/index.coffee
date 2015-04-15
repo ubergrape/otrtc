@@ -6,6 +6,7 @@ io = require('socket.io')(http)
 uuid = require('node-uuid')
 Usermanager = require('./usermanager')
 
+io.set("heartbeat interval", 5)
 
 app.engine('html', swig.renderFile)
 app.set('view engine', 'html')
