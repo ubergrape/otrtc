@@ -33,6 +33,7 @@ MessageStore.dispatchToken = AppDispatcher.register (action) ->
         username: UserdataStore.get_username()
         text: action.text
         time: new Date()
+        type: 'message'
       _messages.push(message)
       MessageStore.emitChange()
       EventBus.publish ChatConstants.EVENT_MESSAGE_OUTBOUND, message
@@ -43,6 +44,18 @@ MessageStore.dispatchToken = AppDispatcher.register (action) ->
         username: action.message.username
         text: action.message.text
         time: new Date()
+        type: 'message'
+      _messages.push(message)
+      MessageStore.emitChange()
+    when ChatConstants.ACTIONTYPE_SMP_INBOUND
+      message =
+        id: _messages.length
+        user_id: action.peer.id
+        username: action.peer.username
+        peer: action.peer
+        question: action.question
+        time: new Date()
+        type: 'smp_request'
       _messages.push(message)
       MessageStore.emitChange()
 

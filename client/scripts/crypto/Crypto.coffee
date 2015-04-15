@@ -32,6 +32,32 @@ Crypto = () ->
           encrypted: encrypted
         }
 
+      peer.otr.on 'smp', (type, data, act) ->
+        switch type
+          when 'question'
+            AppDispatcher.dispatch {
+              type: ChatConstants.ACTIONTYPE_SMP_INBOUND
+              peer: peer
+              question: data
+            }
+          when 'trust'
+            if data == true
+              peer_smp_status = ChatConstants.PEER_SMP_STATUS_VERIFIED
+              action = ChatConstants.ACTIONTYPE_VERIFY_PEER
+            else
+              peer_smp_status = ChatConstants.PEER_SMP_STATUS_FALSIFIED
+              action = ChatConstants.ACTIONTYPE_UNVERIFY_PEER
+            switch act
+              when 'asked'
+                peer.change_smp_status(peer_smp_status)
+                AppDispatcher.dispatch
+                  type: action
+                  peer: peer
+              when 'answered'
+                peer.change_smp_status(peer_smp_status)
+          when 'abort'
+            peer.change_smp_status(ChatConstants.PEER_SMP_STATUS_ABORTED)
+
       peer.otr.on 'io', (msg, meta) ->
         peer.send_message(msg)
 
@@ -55,6 +81,15 @@ Crypto = () ->
         peer.otr.endOtr(() ->
           peer.close()
         )
+
+  EventBus.subscribe ChatConstants.EVENT_SMP_OUTBOUND, (data) =>
+    peer = data.peer
+    if peer.otr?
+      peer.change_smp_status(ChatConstants.PEER_SMP_STATUS_ASKING)
+      if data.question?
+        peer.otr.smpSecret(data.secret, data.question)
+      else
+        peer.otr.smpSecret(data.secret)
 
 
 module.exports = new Crypto()

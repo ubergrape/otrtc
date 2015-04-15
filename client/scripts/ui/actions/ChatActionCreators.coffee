@@ -1,5 +1,6 @@
 AppDispatcher = require '../../dispatcher/AppDispatcher.coffee'
 ChatConstants = require '../../constants/ChatConstants.coffee'
+EventBus = require '../../utils/EventBus.coffee'
 
 module.exports =
   create_message: (text) ->
@@ -42,4 +43,26 @@ module.exports =
         type: ChatConstants.ACTIONTYPE_VERIFY_PEER
         peer: peer
       )
+
+  init_smp: (peer, secret, question) ->
+    EventBus.publish ChatConstants.EVENT_SMP_OUTBOUND,
+      peer: peer
+      secret: secret
+      question: question
+
+  answer_smp: (peer, question) ->
+    AppDispatcher.dispatch
+      type: ChatConstants.ACTIONTYPE_SHOW_SMP_BOX
+      peer: peer
+      question: question
+
+  send_smp_answer: (peer, secret) ->
+    EventBus.publish ChatConstants.EVENT_SMP_OUTBOUND,
+      peer: peer
+      secret: secret
+
+  close_smp_box: () ->
+    AppDispatcher.dispatch(
+      type: ChatConstants.ACTIONTYPE_CLOSE_SMP_BOX
+    )
 

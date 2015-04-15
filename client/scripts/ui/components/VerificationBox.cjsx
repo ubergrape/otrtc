@@ -1,4 +1,5 @@
 ChatActionCreators = require '../actions/ChatActionCreators.coffee'
+ChatConstants = require '../../constants/ChatConstants.coffee'
 React = require 'react'
 SocialistMillionaireInit = require './SocialistMillionaireInit.cjsx'
 
@@ -6,6 +7,7 @@ SocialistMillionaireInit = require './SocialistMillionaireInit.cjsx'
 _handle_close = (event) ->
   event.preventDefault()
   ChatActionCreators.close_verification_box()
+  return false
 
 
 VerificationBox = React.createClass
@@ -14,6 +16,7 @@ VerificationBox = React.createClass
     return {
       windowHeight: window.innerHeight
       windowWidth: window.innerWidth
+      verifiying_peer_smp_status: @props.peer.smp_status
     }
 
   handleResize: (e) ->
@@ -22,17 +25,22 @@ VerificationBox = React.createClass
       windowWidth: window.innerWidth
     })
 
+  _update_smp_state: () ->
+    @setState({verifiying_peer_smp_status: @props.peer.smp_status})
+
   componentDidMount: () ->
     window.addEventListener('resize', this.handleResize)
+    @props.peer.on ChatConstants.EVENT_PEER_SMP_STATUS_CHANGED, @_update_smp_state
 
   componentWillUnmount: () ->
     window.removeEventListener('resize', this.handleResize)
+    @props.peer.removeListener ChatConstants.EVENT_PEER_SMP_STATUS_CHANGED, @_update_smp_state
 
   _on_toggle_verified: () ->
     ChatActionCreators.toggle_verified(@props.peer)
 
   _on_smp_init: (question, answer) ->
-    console.log @props.peer.id, question, answer
+    ChatActionCreators.init_smp(@props.peer, answer, question)
 
   render: () ->
     div_styles = {
@@ -45,9 +53,13 @@ VerificationBox = React.createClass
       <p><strong>Your fingerprint:</strong> {@props.my_fingerprint}</p>
       <p><strong>{@props.peer.username}'s fingerprint:</strong> {@props.peer.get_fingerprint()}</p>
       <p><input type="checkbox" id="verified" checked={@props.peer.verified} onChange={@_on_toggle_verified} />&nbsp;
-        <label htmlFor="verified">I've verified {@props.peer.username}'s fingerprint</label>
+        <label htmlFor="verified">I've verified {@props.peer.username}'s identity</label>
       </p>
-      <SocialistMillionaireInit on_init={@_on_smp_init} />
+      <SocialistMillionaireInit
+        username={@props.peer.username}
+        on_init={@_on_smp_init}
+        smp_status={@state.verifiying_peer_smp_status}
+      />
     </div>
 
 

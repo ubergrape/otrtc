@@ -1,5 +1,6 @@
 React = require 'react'
 Message = require './Message.cjsx'
+MessageSmpRequest = require './MessageSmpRequest.cjsx'
 NoMessagesYet = require './NoMessagesYet.cjsx'
 MessageStore = require '../stores/MessageStore.coffee'
 $ = require 'jquery'
@@ -43,7 +44,17 @@ Messagelist = React.createClass
       if last_time != timestring then time = timestring else time = ''
       last_userid = message.user_id
       last_time = timestring
-      messages.push <Message username={username} text={message.text} time={time} key={message.id} />
+      if message.type == 'smp_request'
+        messages.push <MessageSmpRequest
+          peer={message.peer}
+          username={message.username}
+          question={message.question}
+          time={time}
+          key={message.id}
+        />
+      else
+        messages.push <Message username={username} text={message.text} time={time} key={message.id} />
+
     if messages.length == 0
       messages.push <NoMessagesYet />
 

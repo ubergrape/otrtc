@@ -1,5 +1,6 @@
 AppDispatcher = require '../dispatcher/AppDispatcher.coffee'
 EventBus = require '../utils/EventBus.coffee'
+EventEmitter = require('events').EventEmitter
 PeerConnection = require('rtcpeerconnection')
 ChatConstants = require '../constants/ChatConstants.coffee'
 
@@ -15,6 +16,7 @@ Peer = (peer_id, username, create_offer) ->
   @username = username
   @is_offer_creator = create_offer
   @status = ChatConstants.PEER_STATUS_CONNECTING
+  @smp_status = ChatConstants.PEER_SMP_STATUS_NOTHING
   @verified = false
 
   config =
@@ -101,6 +103,11 @@ Peer.prototype._change_status = (new_status) ->
     old_status: old_status
 
 
+Peer.prototype.change_smp_status = (new_status) ->
+  @smp_status = new_status
+  @emit ChatConstants.EVENT_PEER_SMP_STATUS_CHANGED
+
+
 Peer.prototype.send_message = (message) ->
   if (@status == ChatConstants.PEER_STATUS_CONNECTED or @status == ChatConstants.PEER_STATUS_SECURE_LINE) and @_channel?
     console.log 'message outbound', message
@@ -118,6 +125,11 @@ Peer.prototype.get_fingerprint = () ->
     return @otr.their_priv_pk.fingerprint()
   else
     return ''
+
+
+Peer.prototype.on = EventEmitter.prototype.on
+Peer.prototype.emit = EventEmitter.prototype.emit
+Peer.prototype.removeListener = EventEmitter.prototype.removeListener
 
 
 module.exports = Peer

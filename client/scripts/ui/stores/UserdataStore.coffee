@@ -15,6 +15,8 @@ UserdataStore = assign({}, EventEmitter.prototype, {
 
   verifying_peer: null
 
+  smp_answering: null
+
   emitChange: () ->
     @emit(ChatConstants.EVENT_STORE_CHANGED)
 
@@ -60,11 +62,24 @@ UserdataStore.dispatchToken = AppDispatcher.register (action) =>
     when ChatConstants.ACTIONTYPE_SHOW_VERIFICATION_BOX
       if action.peer? and action.peer.otr? and action.peer.otr.msgstate == OTR.CONST.MSGSTATE_ENCRYPTED
         UserdataStore.verifying_peer = action.peer
+        UserdataStore.smp_answering = null
+        action.peer.smp_status = ChatConstants.PEER_SMP_STATUS_NOTHING
         UserdataStore.emitChange()
       else
         console.log 'cannot verify peer without a secure connection'
     when ChatConstants.ACTIONTYPE_CLOSE_VERIFICATION_BOX
       UserdataStore.verifying_peer = null
+      UserdataStore.emitChange()
+    when ChatConstants.ACTIONTYPE_SHOW_SMP_BOX
+      if action.peer? and action.peer.otr? and action.peer.otr.msgstate == OTR.CONST.MSGSTATE_ENCRYPTED
+        UserdataStore.verifying_peer = null
+        UserdataStore.smp_answering =
+          peer: action.peer
+          question: action.question
+        action.peer.smp_status = ChatConstants.PEER_SMP_STATUS_NOTHING
+        UserdataStore.emitChange()
+    when ChatConstants.ACTIONTYPE_CLOSE_SMP_BOX
+      UserdataStore.smp_answering = null
       UserdataStore.emitChange()
 
 
@@ -78,12 +93,12 @@ EventBus.subscribe ChatConstants.EVENT_LOCAL_USER_AUTHENTICATED, (data) =>
   UserdataStore.emitChange()
 
 # just for dev to speedup login
-window.setTimeout(() ->
-  AppDispatcher.dispatch(
-    type: ChatConstants.ACTIONTYPE_USERNAME_SUPPLIED
-    username: 'Alice'
-  )
-, 100)
+# window.setTimeout(() ->
+#   AppDispatcher.dispatch(
+#     type: ChatConstants.ACTIONTYPE_USERNAME_SUPPLIED
+#     username: 'Alice'
+#   )
+# , 100)
 
 
 module.exports = UserdataStore

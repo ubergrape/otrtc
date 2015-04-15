@@ -1,6 +1,9 @@
 ChatActionCreators = require '../actions/ChatActionCreators.coffee'
+ChatConstants = require '../../constants/ChatConstants.coffee'
 React = require 'react'
 
+
+ENTER_KEY_CODE = 13
 
 _handle_close = (event) ->
   event.preventDefault()
@@ -12,7 +15,7 @@ SocialistMillionaireInit = React.createClass
   getInitialState: () ->
     return {
       question: ''
-      answer: ''
+      secret: ''
     }
 
   # componentDidMount: () ->
@@ -24,29 +27,49 @@ SocialistMillionaireInit = React.createClass
   _on_change: () ->
     @setState
       question: @refs.questionInput.getDOMNode().value
-      answer: @refs.answerInput.getDOMNode().value
+      secret: @refs.secretInput.getDOMNode().value
+
+  _onKeyDown: (event) ->
+    if (event.keyCode == ENTER_KEY_CODE)
+      event.preventDefault()
+      @_init_smp()
 
   _init_smp: () ->
-    question = @refs.questionInput.getDOMNode().value
-    answer = @refs.answerInput.getDOMNode().value
-    @props.on_init(question, answer)
+    question = @state.question.trim()
+    secret = @state.secret.trim()
+    if secret
+      @props.on_init(question, secret)
 
   render: () ->
+    status_classname = 'status '
+    switch @props.smp_status
+      when ChatConstants.PEER_SMP_STATUS_ASKING
+        status_icon = <i className="fa fa-circle-o-notch fa-spin" />
+        status_string = 'Waiting for ' + @props.username + ' to answer.'
+      when ChatConstants.PEER_SMP_STATUS_VERIFIED
+        status_string = @props.username + ' entered the same secret.'
+        status_classname += 'verified'
+      when ChatConstants.PEER_SMP_STATUS_FALSIFIED
+        status_string = @props.username + ' did not enter the same secret. ' + @props.username + ' might not be ' + @props.username + '!'
+        status_classname += 'falsified'
+      when ChatConstants.PEER_SMP_STATUS_ABORTED
+        status_string = 'The protocol was aborted. Maybe we\'ve lost the connection to ' + @props.username + '.'
+
     <div className="socialist_millionaire" >
       <h3>Socialist Millionaire Protocol</h3>
       <p>
-        <label htmlFor="answer"></label>
         <input
           type="text"
-          id="answer"
-          ref="answerInput"
+          id="secret"
+          ref="secretInput"
           placeholder="Shared secret"
-          value={@state.answer}
+          value={@state.secret}
           onChange={@_on_change}
+          autoFocus=true
+          onKeyDown={@_onKeyDown}
         />
       </p>
       <p>
-        <label htmlFor="question"></label>
         <input
           type="text"
           id="question"
@@ -54,14 +77,12 @@ SocialistMillionaireInit = React.createClass
           placeholder="(Optionally provide a reminder of your shared secret)"
           value={@state.question}
           onChange={@_on_change}
+          onKeyDown={@_onKeyDown}
         />
       </p>
       <p>
         <button onClick={@_init_smp}>Check peer's authenticity</button>
-        <span className="status">
-          <i className="fa fa-circle-o-notch fa-spin" />
-          Doing stuff todo and more
-        </span>
+        <span className={status_classname}>{status_icon}{status_string}</span>
       </p>
     </div>
 

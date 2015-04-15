@@ -1,5 +1,4 @@
 ChatConstants = require '../constants/ChatConstants.coffee'
-PeerManager = require './PeerManager.coffee'
 SignalingHandler = require './SignalingHandler.coffee'
 UserdataStore = require '../ui/stores/UserdataStore.coffee'
 

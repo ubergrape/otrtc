@@ -65,6 +65,9 @@ input
     .time
       float: right
       color: rgb(200, 200, 200)
+    &.smp_request
+      .text
+        color: rgb(150, 150, 150)
 
   .no_messages_yet
     text-align: center
@@ -118,7 +121,7 @@ input
   p.spinner
     margin-top: 23px
 
-.verification_box
+.verification_box, .smp_box
   position: absolute
   width: 470px
   background-color: white
@@ -136,7 +139,7 @@ input
   .close_button
     float: right
 
-.socialist_millionaire
+.socialist_millionaire, .smp_box
   margin-top: 30px
   p
     label
@@ -147,6 +150,12 @@ input
       float: right
       color: rgb(200, 200, 200)
       font-size: 14px
+      max-width: 60%
+      text-align: right
       i
         margin-right: 5px
+      &.verified
+        color: rgb(50, 200, 50)
+      &.falsified
+        color: rgb(200, 50, 50)
 

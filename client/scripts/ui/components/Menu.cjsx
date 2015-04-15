@@ -2,6 +2,7 @@ ChatConstants = require '../../constants/ChatConstants.coffee'
 ConnectionCoordinator = require '../../transport/ConnectionCoordinator.coffee'
 PeerManager = require '../../transport/PeerManager.coffee'
 React = require 'react'
+SmpBox = require './SmpBox.cjsx'
 UserdataStore = require '../stores/UserdataStore.coffee'
 Userlist = require './Userlist.cjsx'
 VerificationBox = require './VerificationBox.cjsx'
@@ -16,6 +17,7 @@ get_peers_state = () ->
     my_name: UserdataStore.get_username()
     peers: PeerManager.get_peers()
     verifying_peer: UserdataStore.verifying_peer
+    smp_answering: UserdataStore.smp_answering
   }
 
 
@@ -37,16 +39,21 @@ Menu = React.createClass
 
   render: () ->
     if @state.verifying_peer?
-      ver_box = <VerificationBox
+      box = <VerificationBox
         peer={@state.verifying_peer}
         my_fingerprint={UserdataStore.get_my_fingerprint()}
         key={@state.verifying_peer.id} />
+    else if @state.smp_answering?
+      box = <SmpBox
+        peer={@state.smp_answering.peer}
+        question={@state.smp_answering.question}
+        key={@state.smp_answering.peer.id} />
     else
-      ver_box = null
+      box = null
     <div className="menu">
       <WhoAmI name={@state.my_name} />
       <Userlist peers={@state.peers} />
-      {ver_box}
+      {box}
     </div>
 
 
