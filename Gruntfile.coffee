@@ -68,6 +68,9 @@ module.exports = (grunt) ->
       scripts:
         files: 'client/scripts/**/*'
         tasks: [ 'browserify:dev' ]
+      otr:
+        files: 'client/scripts/vendor/**/*'
+        tasks: [ 'concat:otr' ]
       server:
         files: 'server/**/*'
         tasks: [ 'express:node_server:stop', 'coffee:server', 'copy:server', 'express:node_server' ]
