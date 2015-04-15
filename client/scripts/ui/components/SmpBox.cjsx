@@ -19,6 +19,7 @@ SmpBox = React.createClass
       windowHeight: window.innerHeight
       windowWidth: window.innerWidth
       verifying_peer_smp_status: @props.peer.smp_status
+      input_disabled: false
     }
 
   handleResize: (e) ->
@@ -38,14 +39,20 @@ SmpBox = React.createClass
     window.removeEventListener('resize', this.handleResize)
     @props.peer.removeListener ChatConstants.EVENT_PEER_SMP_STATUS_CHANGED, @_update_smp_state
 
+  _on_change: () ->
+    @setState
+      secret: @refs.secretInput.getDOMNode().value
+
   _onKeyDown: (event) ->
     if (event.keyCode == ENTER_KEY_CODE)
       event.preventDefault()
       @_answer_smp()
 
   _answer_smp: () ->
-    answer = @refs.answerInput.getDOMNode().value
-    ChatActionCreators.send_smp_answer(@props.peer, answer)
+    secret = @state.secret.trim()
+    if secret
+      @setState({input_disabled: true})
+      ChatActionCreators.send_smp_answer(@props.peer, secret)
 
   render: () ->
     div_styles = {
@@ -76,17 +83,18 @@ SmpBox = React.createClass
       <p>
         <input
           type="text"
-          id="answer"
-          ref="answerInput"
+          id="secret"
+          ref="secretInput"
           placeholder="Shared secret"
-          value={@state.answer}
+          value={@state.secret}
           onChange={@_on_change}
           autoFocus=true
           onKeyDown={@_onKeyDown}
+          disabled={@state.input_disabled}
         />
       </p>
       <p>
-        <button onClick={@_answer_smp}>Compare shared secrets</button>
+        <button onClick={@_answer_smp} disabled={@state.input_disabled}>Compare shared secrets</button>
         <span className={status_classname}>{status_icon}{status_string}</span>
       </p>
     </div>

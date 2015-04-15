@@ -17,6 +17,7 @@ SocialistMillionaireInit = React.createClass
     return {
       question: ''
       secret: ''
+      input_disabled: false
     }
 
   # componentDidMount: () ->
@@ -39,6 +40,7 @@ SocialistMillionaireInit = React.createClass
     question = @state.question.trim()
     secret = @state.secret.trim()
     if secret
+      @setState({input_disabled: true})
       @props.on_init(question, secret)
 
   render: () ->
@@ -68,6 +70,7 @@ SocialistMillionaireInit = React.createClass
           onChange={@_on_change}
           autoFocus=true
           onKeyDown={@_onKeyDown}
+          disabled={@state.input_disabled}
         />
       </p>
       <p>
@@ -79,10 +82,11 @@ SocialistMillionaireInit = React.createClass
           value={@state.question}
           onChange={@_on_change}
           onKeyDown={@_onKeyDown}
+          disabled={@state.input_disabled}
         />
       </p>
       <p>
-        <button onClick={@_init_smp}>Check peer's authenticity</button>
+        <button onClick={@_init_smp} disabled={@state.input_disabled}>Check peer's authenticity</button>
         <span className={status_classname}>{status_icon}{status_string}</span>
       </p>
     </div>
