@@ -8,8 +8,8 @@ ENTER_KEY_CODE = 13
 
 _handle_close = (event) ->
   event.preventDefault()
+  event.stopPropagation()
   ChatActionCreators.close_smp_box()
-  return false
 
 
 SmpBox = React.createClass

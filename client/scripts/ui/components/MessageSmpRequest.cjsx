@@ -6,8 +6,8 @@ Message = React.createClass
 
   on_verify: (event) ->
     event.preventDefault()
+    event.stopPropagation()
     ChatActionCreators.answer_smp(@props.peer, @props.question)
-    return false
 
 
   render: () ->

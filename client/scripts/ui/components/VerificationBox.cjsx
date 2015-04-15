@@ -6,8 +6,8 @@ SocialistMillionaireInit = require './SocialistMillionaireInit.cjsx'
 
 _handle_close = (event) ->
   event.preventDefault()
+  event.stopPropagation()
   ChatActionCreators.close_verification_box()
-  return false
 
 
 VerificationBox = React.createClass
