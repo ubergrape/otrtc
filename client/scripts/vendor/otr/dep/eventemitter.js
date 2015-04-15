@@ -366,15 +366,15 @@
 					// The function is executed either with a basic call or an apply if there is an args array
 					listener = listeners[key][i];
 
-					if (listener.once === true) {
-						this.removeListener(evt, listener.listener);
-					}
+					// if (listener.once === true) {
+					// 	this.removeListener(evt, listener.listener);
+					// }
 
 					response = listener.listener.apply(this, args || []);
 
-					if (response === this._getOnceReturnValue()) {
-						this.removeListener(evt, listener.listener);
-					}
+					// if (response === this._getOnceReturnValue()) {
+					// 	this.removeListener(evt, listener.listener);
+					// }
 				}
 			}
 		}
