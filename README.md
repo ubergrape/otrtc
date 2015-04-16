@@ -29,3 +29,10 @@ and deploy everything inside the build directory.
 We've only specified a single STUN server in
 `client/scripts/transport/Peer.coffee` and omitted TURN-servers. If you
 want to add your own servers (STUN and/or TURN), add them to that list.
+
+You can find quite an up-to-date list here: [STUN+TURN servers
+list](https://gist.github.com/yetithefoot/7592580). This should get you
+started for trying out the chat. But for production applications you
+should get permission from all TURN/STUN servers you use and only use
+servers you trust as clients expose info about their networking
+infrastructure to them. Ideally you would set up your own servers.
