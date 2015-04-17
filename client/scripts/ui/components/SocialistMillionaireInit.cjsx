@@ -63,12 +63,11 @@ SocialistMillionaireInit = React.createClass
       <p>
         <input
           type="text"
-          id="secret"
-          ref="secretInput"
-          placeholder="Shared secret"
-          value={@state.secret}
+          id="question"
+          ref="questionInput"
+          placeholder="Question (optional)"
+          value={@state.question}
           onChange={@_on_change}
-          autoFocus=true
           onKeyDown={@_onKeyDown}
           disabled={@state.input_disabled}
         />
@@ -76,11 +75,12 @@ SocialistMillionaireInit = React.createClass
       <p>
         <input
           type="text"
-          id="question"
-          ref="questionInput"
-          placeholder="(Optionally provide a reminder of your shared secret)"
-          value={@state.question}
+          id="secret"
+          ref="secretInput"
+          placeholder="Secret answer"
+          value={@state.secret}
           onChange={@_on_change}
+          autoFocus=true
           onKeyDown={@_onKeyDown}
           disabled={@state.input_disabled}
         />

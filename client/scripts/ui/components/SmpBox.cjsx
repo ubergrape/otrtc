@@ -60,7 +60,7 @@ SmpBox = React.createClass
       left: Math.round((@state.windowWidth - 500) / 2) + "px"
     }
     if @props.question?
-      question = <p><strong>Hint:</strong> {@props.question}</p>
+      question = <p><strong>Question:</strong> {@props.question}</p>
 
     status_classname = 'status '
     switch @state.verifying_peer_smp_status
@@ -85,7 +85,7 @@ SmpBox = React.createClass
           type="text"
           id="secret"
           ref="secretInput"
-          placeholder="Shared secret"
+          placeholder="Secret answer"
           value={@state.secret}
           onChange={@_on_change}
           autoFocus=true
@@ -94,7 +94,7 @@ SmpBox = React.createClass
         />
       </p>
       <p>
-        <button onClick={@_answer_smp} disabled={@state.input_disabled}>Compare shared secrets</button>
+        <button onClick={@_answer_smp} disabled={@state.input_disabled}>Compare your answers</button>
         <span className={status_classname}>{status_icon}{status_string}</span>
       </p>
     </div>
