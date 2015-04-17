@@ -121,7 +121,7 @@ Peer.prototype.close = () ->
 
 
 Peer.prototype.get_fingerprint = () ->
-  if @otr?
+  if @otr? and @otr.their_priv_pk?
     return @otr.their_priv_pk.fingerprint()
   else
     return ''
