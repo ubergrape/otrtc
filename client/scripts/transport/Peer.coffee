@@ -109,7 +109,7 @@ Peer.prototype.change_smp_status = (new_status) ->
 
 
 Peer.prototype.send_message = (message) ->
-  if (@status == ChatConstants.PEER_STATUS_CONNECTED or @status == ChatConstants.PEER_STATUS_SECURE_LINE) and @_channel?
+  if (@status == ChatConstants.PEER_STATUS_CONNECTED or @status == ChatConstants.PEER_STATUS_SECURE_LINE) and @_channel? and @_channel.readyState == 'open'
     console.log 'message outbound', message
     @_channel.send(message)
 
