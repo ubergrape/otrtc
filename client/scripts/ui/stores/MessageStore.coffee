@@ -21,6 +21,13 @@ MessageStore = assign({}, EventEmitter.prototype, {
 
   get_all: () ->
     return _messages
+
+  find_all_for_peer: (peer_id) ->
+    result = []
+    for m in _messages
+      if m.user_id == peer_id
+        result.push(m)
+    return result
 })
 
 
@@ -55,8 +62,14 @@ MessageStore.dispatchToken = AppDispatcher.register (action) ->
         peer: action.peer
         question: action.question
         time: new Date()
+        active: true
         type: 'smp_request'
       _messages.push(message)
+      MessageStore.emitChange()
+    when ChatConstants.ACTIONTYPE_DEACTIVATE_SMP_REQUEST_MESSAGES
+      messages = MessageStore.find_all_for_peer(action.peer_id)
+      for m in messages
+        m.active = false
       MessageStore.emitChange()
 
 

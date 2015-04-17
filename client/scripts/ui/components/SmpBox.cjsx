@@ -53,6 +53,7 @@ SmpBox = React.createClass
     if secret
       @setState({input_disabled: true})
       ChatActionCreators.send_smp_answer(@props.peer, secret)
+      ChatActionCreators.deactivate_smp_request_messages(@props.peer.id)
 
   render: () ->
     div_styles = {

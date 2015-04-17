@@ -51,6 +51,7 @@ Messagelist = React.createClass
           question={message.question}
           time={time}
           key={message.id}
+          active={message.active}
         />
       else
         messages.push <Message username={username} text={message.text} time={time} key={message.id} />

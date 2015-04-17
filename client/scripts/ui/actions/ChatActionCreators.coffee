@@ -66,3 +66,9 @@ module.exports =
       type: ChatConstants.ACTIONTYPE_CLOSE_SMP_BOX
     )
 
+  deactivate_smp_request_messages: (peer_id) ->
+    AppDispatcher.dispatch(
+      type: ChatConstants.ACTIONTYPE_DEACTIVATE_SMP_REQUEST_MESSAGES
+      peer_id: peer_id
+    )
+
