@@ -20,9 +20,9 @@ Peer = (peer_id, username, create_offer) ->
   @verified = false
 
   config =
-    iceServers: [{
-      url: 'stun:stun.stunprotocol.org'
-    }]
+    iceServers: [
+      {url:'stun:stun.stunprotocol.org'}
+    ]
     bundlePolicy: 'max-compat'
 
   @_connection = new PeerConnection(config, {
